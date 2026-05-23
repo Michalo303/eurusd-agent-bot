@@ -20,7 +20,7 @@ logs/
 *.sqlite3
 *.db
 state/heartbeat.json
-state/hypotheses.jsonl
+state/last_reflection.json
 
 # Railway/local metadata
 .railway/

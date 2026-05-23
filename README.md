@@ -56,6 +56,13 @@ Apply the best improvement when it beats the current score:
 python -m eurusd_bot.reflect --csv data\eurusd_5m.csv --apply
 ```
 
+Run the full local reflection cycle, commit, push, and optionally redeploy Railway:
+
+```powershell
+.\scripts\run_reflection_cycle.ps1 -Apply
+.\scripts\run_reflection_cycle.ps1 -Apply -Deploy
+```
+
 ## CSV Format
 
 Use this header for your own 5m EURUSD candles:
