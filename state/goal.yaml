@@ -1,0 +1,8 @@
+asset: "EURUSD"
+target_return_annual: 0.12
+bond_baseline_annual: 0.04
+max_drawdown: 0.06
+min_sharpe: 1.0
+reflection_every: 25
+one_variable_only: true
+

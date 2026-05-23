@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data and backtest artifacts
+data/
+logs/
+*.sqlite
+*.sqlite3
+*.db
+state/heartbeat.json
+state/hypotheses.jsonl
+
+# Railway/local metadata
+.railway/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

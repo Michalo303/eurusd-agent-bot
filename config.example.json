@@ -1,0 +1,15 @@
+{
+  "symbol": "EURUSD",
+  "starting_equity": 10000.0,
+  "risk_per_trade_pct": 0.25,
+  "max_daily_loss_pct": 1.0,
+  "max_trades_per_day": 2,
+  "min_confluence": 5,
+  "min_rr": 1.5,
+  "spread_pips": 0.8,
+  "slippage_pips": 0.2,
+  "analysis_interval_minutes": 30,
+  "session_start_utc": "13:30",
+  "session_end_utc": "16:00"
+}
+
