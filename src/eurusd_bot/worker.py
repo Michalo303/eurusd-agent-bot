@@ -27,13 +27,14 @@ def main() -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
     state_dir.mkdir(parents=True, exist_ok=True)
-    seed_state(state_dir, Path(os.getenv("EURUSD_DEFAULT_STATE_DIR", "default_state")))
+    default_state_dir = Path(os.getenv("EURUSD_DEFAULT_STATE_DIR", "default_state"))
+    seed_state(state_dir, default_state_dir)
 
     print("Booting eurusd paper worker", flush=True)
     failures = 0
     while True:
         try:
-            summary = run_once(state_dir, data_dir, logs_dir)
+            summary = run_once(state_dir, data_dir, logs_dir, default_state_dir)
             failures = 0
             print(json.dumps({"event": "cycle_complete", **summary}), flush=True)
         except Exception as exc:
@@ -44,13 +45,18 @@ def main() -> None:
         time.sleep(interval)
 
 
-def run_once(state_dir: Path, data_dir: Path, logs_dir: Path) -> dict[str, object]:
+def run_once(state_dir: Path, data_dir: Path, logs_dir: Path, default_state_dir: Path | None = None) -> dict[str, object]:
     candles = fetch_yahoo_candles("EURUSD=X", "60d", "5m")
     csv_path = data_dir / "eurusd_5m.csv"
     save_csv(candles, csv_path)
 
     config = load_config(None)
-    strategy_path = state_dir / "strategy.yaml"
+    use_volume_strategy = os.getenv("EURUSD_USE_VOLUME_STRATEGY", "false").lower() == "true"
+    default_strategy = (default_state_dir / "strategy.yaml") if default_state_dir else None
+    volume_strategy = state_dir / "strategy.yaml"
+    strategy_path = volume_strategy if use_volume_strategy else default_strategy
+    if strategy_path is None or not strategy_path.exists():
+        strategy_path = volume_strategy
     if strategy_path.exists():
         config = apply_strategy(config, load_yaml(strategy_path))
 
@@ -69,6 +75,7 @@ def run_once(state_dir: Path, data_dir: Path, logs_dir: Path) -> dict[str, objec
         "last_candle": candles[-1].timestamp.isoformat(),
         "summary": summary,
         "exports": export_paths,
+        "strategy_source": str(strategy_path),
     }
     heartbeat_path = state_dir / "heartbeat.json"
     heartbeat_path.write_text(json.dumps(heartbeat, indent=2), encoding="utf-8")
