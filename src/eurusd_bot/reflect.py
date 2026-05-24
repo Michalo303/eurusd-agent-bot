@@ -27,6 +27,7 @@ def main() -> None:
     parser.add_argument("--history-dir", default="state/history")
     parser.add_argument("--hypotheses", default="state/hypotheses.jsonl")
     parser.add_argument("--apply", action="store_true", help="Write the best one-variable change into strategy.yaml.")
+    parser.add_argument("--min-improvement", type=float, default=0.001, help="Minimum score lift required before applying.")
     args = parser.parse_args()
 
     result = reflect_once(args)
@@ -47,16 +48,21 @@ def reflect_once(args: argparse.Namespace) -> dict[str, Any]:
         candidates.append(evaluated)
     best = max(candidates, key=lambda item: item["score"]) if candidates else base
 
+    improvement = best["score"] - base["score"]
+    should_apply = bool(args.apply and improvement >= args.min_improvement)
+
     hypothesis = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "base_score": base["score"],
         "best_score": best["score"],
+        "improvement": round(improvement, 6),
+        "min_improvement": args.min_improvement,
         "base_metrics": base["metrics"],
         "best_metrics": best["metrics"],
         "changed_variable": best["changed_variable"],
         "old_value": best["old_value"],
         "new_value": best["new_value"],
-        "applied": bool(args.apply and best["score"] > base["score"]),
+        "applied": should_apply,
     }
 
     if hypothesis["applied"]:
