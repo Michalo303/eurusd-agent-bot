@@ -1,0 +1,8 @@
+version: '03'
+min_confluence: 4
+min_rr: 1.5
+risk_per_trade_pct: 0.25
+max_daily_loss_pct: 1.0
+max_trades_per_day: 3
+session_start_utc: '13:30'
+session_end_utc: '16:00'
