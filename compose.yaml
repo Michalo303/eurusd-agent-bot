@@ -1,0 +1,26 @@
+services:
+  eurusd-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eurusd-worker
+    restart: unless-stopped
+    environment:
+      HERMES_TRADING_MODE: paper
+      HERMES_TRADING_I_ACCEPT_RISK: "false"
+      EURUSD_WORKER_INTERVAL_SECONDS: "${EURUSD_WORKER_INTERVAL_SECONDS:-1800}"
+      EURUSD_USE_VOLUME_STRATEGY: "${EURUSD_USE_VOLUME_STRATEGY:-false}"
+      EURUSD_STATE_DIR: /app/state
+      EURUSD_DATA_DIR: /app/data
+      EURUSD_LOGS_DIR: /app/logs
+    volumes:
+      - ./state:/app/state
+      - ./data:/app/data
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json, pathlib, time; p=pathlib.Path('/app/state/heartbeat.json'); raise SystemExit(0 if p.exists() and time.time()-p.stat().st_mtime < 7200 else 1)"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+

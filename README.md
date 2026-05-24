@@ -103,3 +103,20 @@ python -m eurusd_bot.worker
 ```
 
 It downloads recent EURUSD data, runs the current `state/strategy.yaml`, writes `state/heartbeat.json`, and exports journal CSVs.
+
+## Hetzner Deployment
+
+For a small always-on VPS, use Ubuntu 24.04 and a CX22/CX32-class server. The worker has no public HTTP port; it only needs outbound internet and SSH for maintenance.
+
+Deploy to an existing server:
+
+```powershell
+.\scripts\deploy_hetzner.ps1 -HostName <server-ip>
+```
+
+Check the worker:
+
+```powershell
+ssh root@<server-ip> "cd /opt/eurusd-agent-bot && docker compose ps"
+ssh root@<server-ip> "cd /opt/eurusd-agent-bot && docker compose logs -f eurusd-worker"
+```
