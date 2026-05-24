@@ -9,7 +9,7 @@ services:
       HERMES_TRADING_MODE: paper
       HERMES_TRADING_I_ACCEPT_RISK: "false"
       EURUSD_WORKER_INTERVAL_SECONDS: "${EURUSD_WORKER_INTERVAL_SECONDS:-1800}"
-      EURUSD_USE_VOLUME_STRATEGY: "${EURUSD_USE_VOLUME_STRATEGY:-false}"
+      EURUSD_USE_VOLUME_STRATEGY: "${EURUSD_USE_VOLUME_STRATEGY:-true}"
       EURUSD_STATE_DIR: /app/state
       EURUSD_DATA_DIR: /app/data
       EURUSD_LOGS_DIR: /app/logs
@@ -23,4 +23,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 2m
-
